@@ -17,11 +17,11 @@ This is a fully functional VS Code extension that highlights custom keywords in 
 - ✅ User can add/edit keywords in VS Code settings
 - ✅ Each keyword can have a custom color (hex format)
 - ✅ Pre-configured with 5 default keywords (dark backgrounds with white text):
-  - `// [SamChen]` - Dark Red (#1A3D64)
+  - `// [SamChen]` - Dark Blue (#1A3D64)
   - `// TODO:` - Dark Teal (#FFA240)
-  - `// FIX:` - Dark Gold (#DC0000)
-  - `// NOTE:` - Dark Blue (#41644A)
-  - `// LOG:` - Dark Brown (#94B4C1)
+  - `// FIX:` - Dark Red (#DC0000)
+  - `// NOTE:` - Dark Green (#41644A)
+  - `// LOG:` - Dark Gray (#94B4C1)
 
 ### 3. Toggle Functionality
 - ✅ Command to enable/disable highlighting: "Custom Comment Highlighter: Toggle Highlighting"

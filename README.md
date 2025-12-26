@@ -15,11 +15,11 @@ A Visual Studio Code extension that highlights custom keywords in comments with 
 
 The extension comes pre-configured with these keywords (dark backgrounds with white text):
 
-- `//[SamChen]` - Dark red background (#8B2635)
-- `// TODO:` - Dark teal background (#1B5E63)
-- `//FIX:` - Dark yellow/gold background (#8B6F00)
-- `// NOTE:` - Dark blue background (#2C5F6F)
-- `// HACK:` - Dark orange/brown background (#8B5A2B)
+  - `// [SamChen]` - Dark Blue (#1A3D64)
+  - `// TODO:` - Dark Teal (#FFA240)
+  - `// FIX:` - Dark Red (#DC0000)
+  - `// NOTE:` - Dark Green (#41644A)
+  - `// LOG:` - Dark Gray (#94B4C1)
 
 ## Usage
 
