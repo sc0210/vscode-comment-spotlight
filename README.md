@@ -9,9 +9,10 @@ A Visual Studio Code extension that highlights custom keywords in comments with 
 - **Customizable Keywords**: Define your own keywords to highlight (case-sensitive matching)
 - **Vivid Background Colors**: Each keyword can have its own distinctive background color
 - **Bold Text**: Highlighted lines are displayed in bold for better visibility
-- **Toggle On/Off**: Quickly enable or disable highlighting with a command
+- **Toggle On/Off**: Quickly enable or disable highlighting with a command or status bar button
 - **Live Updates**: Highlights update automatically as you type
 - **Configurable**: Easily add, edit, or remove keywords through VS Code settings
+- **Status Bar Integration**: One-click toggle button in the status bar
 
 ## Default Keywords
 
@@ -44,13 +45,21 @@ function processData() {
 
 ### Toggle Highlighting
 
-To turn highlighting on or off:
+You can toggle highlighting on or off in three ways:
 
+**Option 1: Status Bar Button (Easiest)**
+- Look at the bottom-right of VS Code
+- Click the "👁 Comments" button to toggle
+- When enabled: Shows "👁 Comments" (eye icon)
+- When disabled: Shows "👁‍🗨 Comments" with warning color
+
+**Option 2: Command Palette**
 1. Open Command Palette (`Cmd+Shift+P` on Mac, `Ctrl+Shift+P` on Windows/Linux)
 2. Type "Custom Comment Highlighter: Toggle Highlighting"
 3. Press Enter
 
-Or you can assign a keyboard shortcut for quick access.
+**Option 3: Keyboard Shortcut**
+- Assign a custom keyboard shortcut (see Keyboard Shortcut Setup section below)
 
 ### Customize Keywords and Colors
 

@@ -9,6 +9,7 @@ interface KeywordConfig {
 
 let decorationTypes: Map<string, vscode.TextEditorDecorationType> = new Map();
 let isEnabled: boolean = true;
+let statusBarItem: vscode.StatusBarItem;
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -16,8 +17,17 @@ export function activate(context: vscode.ExtensionContext) {
 
 	console.log('Custom Comment Highlighter is now active!');
 
+	// Create status bar item
+	statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+	statusBarItem.command = 'customCommentHighlighter.toggleHighlight';
+	statusBarItem.tooltip = 'Click to toggle comment highlighting';
+	context.subscriptions.push(statusBarItem);
+
 	// Load initial settings
 	loadConfiguration();
+
+	// Show status bar immediately
+	statusBarItem.show();
 
 	// Register toggle command
 	const toggleCommand = vscode.commands.registerCommand('customCommentHighlighter.toggleHighlight', () => {
@@ -25,12 +35,17 @@ export function activate(context: vscode.ExtensionContext) {
 		const config = vscode.workspace.getConfiguration('customCommentHighlighter');
 		config.update('enabled', isEnabled, vscode.ConfigurationTarget.Global);
 
+		updateStatusBar();
+
+		// Reload decorations with new style
+		loadConfiguration();
+
 		if (isEnabled) {
-			vscode.window.showInformationMessage('Custom Comment Highlighter: Highlighting enabled');
+			vscode.window.showInformationMessage('Custom Comment Highlighter: Background colors enabled');
 			updateAllEditors();
 		} else {
-			vscode.window.showInformationMessage('Custom Comment Highlighter: Highlighting disabled');
-			clearAllDecorations();
+			vscode.window.showInformationMessage('Custom Comment Highlighter: Background colors disabled (bold text only)');
+			updateAllEditors();
 		}
 	});
 
@@ -82,8 +97,8 @@ function loadConfiguration() {
 	const keywords: KeywordConfig[] = config.get('keywords', []);
 	keywords.forEach(({ keyword, color }) => {
 		const decorationType = vscode.window.createTextEditorDecorationType({
-			backgroundColor: color,
-			color: '#FFFFFF',
+			backgroundColor: isEnabled ? color : undefined,
+			color: isEnabled ? '#FFFFFF' : undefined,
 			fontWeight: 'bold',
 			isWholeLine: true,
 			overviewRulerColor: color,
@@ -91,6 +106,9 @@ function loadConfiguration() {
 		});
 		decorationTypes.set(keyword, decorationType);
 	});
+
+	// Update status bar when config changes
+	updateStatusBar();
 }
 
 function updateAllEditors() {
@@ -102,17 +120,14 @@ function updateAllEditors() {
 function clearAllDecorations() {
 	vscode.window.visibleTextEditors.forEach(editor => {
 		decorationTypes.forEach(decorationType => {
+			// Force refresh after clearing
+			updateAllEditors();
 			editor.setDecorations(decorationType, []);
 		});
 	});
 }
 
 function updateDecorations(editor: vscode.TextEditor) {
-	if (!isEnabled) {
-		clearAllDecorations();
-		return;
-	}
-
 	const document = editor.document;
 	const text = document.getText();
 
@@ -152,10 +167,26 @@ function updateDecorations(editor: vscode.TextEditor) {
 	});
 }
 
+function updateStatusBar() {
+	if (isEnabled) {
+		statusBarItem.text = "$(eye) Comments";
+		statusBarItem.backgroundColor = undefined;
+	} else {
+		statusBarItem.text = "$(eye-closed) Comments";
+		statusBarItem.backgroundColor = new vscode.ThemeColor('statusBarItem.warningBackground');
+	}
+	statusBarItem.show();
+}
+
 // This method is called when your extension is deactivated
 export function deactivate() {
 	// Dispose all decoration types
 	decorationTypes.forEach(decorationType => decorationType.dispose());
 	decorationTypes.clear();
+
+	// Dispose status bar item
+	if (statusBarItem) {
+		statusBarItem.dispose();
+	}
 }
 
