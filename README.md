@@ -208,6 +208,14 @@ This extension is provided as-is for personal and commercial use.
 
 Feel free to submit issues and enhancement requests!
 
+## Documentation
+
+- 📖 [Quick Reference](docs/QUICK-REFERENCE.md) - Fast reference for common tasks
+- 📦 [Installation Guide](docs/INSTALL.md) - Detailed installation instructions
+- ⚙️ [Configuration Guide](docs/CONFIGURATION-GUIDE.md) - Customization options and examples
+- 🔧 [Project Summary](docs/PROJECT-SUMMARY.md) - Technical details and architecture
+- 💡 [Examples](examples/) - Sample files demonstrating the extension
+
 ---
 
 **Enjoy highlighting your comments!** 🎨
