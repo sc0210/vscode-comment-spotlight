@@ -9,6 +9,7 @@ interface KeywordConfig {
 
 let decorationTypes: Map<string, vscode.TextEditorDecorationType> = new Map();
 let isEnabled: boolean = true;
+let highlightMode: string = 'wholeLine';
 let statusBarItem: vscode.StatusBarItem;
 
 // This method is called when your extension is activated
@@ -88,6 +89,7 @@ export function activate(context: vscode.ExtensionContext) {
 function loadConfiguration() {
 	const config = vscode.workspace.getConfiguration('customCommentHighlighter');
 	isEnabled = config.get('enabled', true);
+	highlightMode = config.get('highlightMode', 'wholeLine');
 
 	// Clear existing decoration types
 	decorationTypes.forEach(decorationType => decorationType.dispose());
@@ -100,7 +102,7 @@ function loadConfiguration() {
 			backgroundColor: isEnabled ? color : undefined,
 			color: isEnabled ? '#FFFFFF' : undefined,
 			fontWeight: 'bold',
-			isWholeLine: true,
+			isWholeLine: highlightMode === 'wholeLine',
 			overviewRulerColor: color,
 			overviewRulerLane: vscode.OverviewRulerLane.Right
 		});
@@ -149,12 +151,28 @@ function updateDecorations(editor: vscode.TextEditor) {
 			// Case-sensitive search
 			const index = lineText.indexOf(keyword);
 			if (index !== -1) {
-				const startPos = new vscode.Position(lineNum, 0);
-				const endPos = new vscode.Position(lineNum, lineText.length);
-				const decoration: vscode.DecorationOptions = {
-					range: new vscode.Range(startPos, endPos),
-					hoverMessage: `Highlighted: ${keyword}`
-				};
+				let decoration: vscode.DecorationOptions;
+
+				if (highlightMode === 'wholeLine') {
+					// Highlight entire line including leading/trailing whitespace
+					const startPos = new vscode.Position(lineNum, 0);
+					const endPos = new vscode.Position(lineNum, lineText.length);
+					decoration = {
+						range: new vscode.Range(startPos, endPos),
+						hoverMessage: `Highlighted: ${keyword}`
+					};
+				} else {
+					// Highlight only the text content (trim whitespace)
+					const trimmedStart = lineText.search(/\S/);
+					const trimmedEnd = lineText.trimEnd().length;
+					const startPos = new vscode.Position(lineNum, trimmedStart >= 0 ? trimmedStart : 0);
+					const endPos = new vscode.Position(lineNum, trimmedEnd);
+					decoration = {
+						range: new vscode.Range(startPos, endPos),
+						hoverMessage: `Highlighted: ${keyword}`
+					};
+				}
+
 				decorationsMap.get(keyword)?.push(decoration);
 			}
 		});

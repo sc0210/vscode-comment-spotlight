@@ -2,7 +2,11 @@
 
 A Visual Studio Code extension that highlights custom keywords in comments with configurable colors and bold formatting. Perfect for tracking TODOs, FIXMEs, personal tags, and other important markers in your code.
 
-![Extension Demo](images/demo-screenshot.png)
+## Demo Screenshots
+- **Mode:** Whole Line Highlighting
+  ![Extension Demo-1](images/demo-screenshot-wholeline.png)
+- **Mode:** Keyword Highlighting
+  ![Extension Demo-2](images/demo-screenshot-keyword.png)
 
 ## Features
 
@@ -37,9 +41,9 @@ Example:
 ```javascript
 // TODO: Implement error handling
 function processData() {
-    //FIX: This needs optimization
+    // FIX: This needs optimization
     // NOTE: This is a temporary solution
-    //[SamChen] Review this logic
+    // [SamChen] Review this logic
 }
 ```
 
