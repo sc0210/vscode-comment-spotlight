@@ -21,7 +21,7 @@
 {
   "customCommentHighlighter.keywords": [
     {
-      "keyword": "//[SamChen]",      // ← Your keyword (case-sensitive)
+      "keyword": "// [SamChen]",      // ← Your keyword (case-sensitive)
       "color": "#FF6B6B"              // ← Background color (hex format)
     },
     {

@@ -29,11 +29,11 @@
 
 | Keyword | Color | Use Case |
 |---------|-------|----------|
-| `//[SamChen]` | Dark Red | Personal notes/reviews |
+| `// [SamChen]` | Dark Red | Personal notes/reviews |
 | `// TODO:` | Dark Teal | Tasks to complete |
-| `//FIX:` | Dark Gold | Bugs to fix |
+| `// FIX:` | Dark Gold | Bugs to fix |
 | `// NOTE:` | Dark Blue | Important notes |
-| `// HACK:` | Dark Brown | Temporary solutions |
+| `// LOG:` | Dark Brown | Temporary solutions |
 
 **All keywords display with white text on dark background for maximum contrast!**
 
@@ -42,9 +42,9 @@
 ```javascript
 // TODO: Implement error handling      ← Highlighted in teal
 function process() {
-    //FIX: Memory leak here             ← Highlighted in yellow
+    // FIX: Memory leak here             ← Highlighted in yellow
     // NOTE: Uses async pattern          ← Highlighted in light blue
-    //[SamChen] Check this logic        ← Highlighted in red
+    // [SamChen] Check this logic        ← Highlighted in red
 }
 ```
 

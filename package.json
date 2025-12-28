@@ -37,7 +37,7 @@
               "color": "#1B5E63"
             },
             {
-              "keyword": "//FIX:",
+              "keyword": "// FIX:",
               "color": "#8B6F00"
             },
             {
@@ -45,7 +45,7 @@
               "color": "#2C5F6F"
             },
             {
-              "keyword": "// HACK:",
+              "keyword": "// LOG:",
               "color": "#8B5A2B"
             }
           ],
@@ -69,6 +69,16 @@
           "type": "boolean",
           "default": true,
           "description": "Enable or disable comment highlighting"
+        },
+        "customCommentHighlighter.highlightMode": {
+          "type": "string",
+          "enum": ["wholeLine", "keywordOnly"],
+          "default": "wholeLine",
+          "description": "Highlight mode: 'wholeLine' highlights the entire line, 'keywordOnly' highlights only the keyword text",
+          "enumDescriptions": [
+            "Highlight the entire line containing the keyword",
+            "Highlight only the keyword text itself"
+          ]
         }
       }
     }
