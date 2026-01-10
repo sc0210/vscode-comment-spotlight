@@ -1,9 +1,13 @@
 {
   "name": "custom-comment-highlighter",
   "displayName": "Custom Comment Highlighter",
-  "description": "Highlight custom keywords in comments with configurable colors and toggle functionality",
-  "version": "0.0.1",
-  "publisher": "samchen",
+  "description": "Highlight custom keywords anywhere in your code with configurable colors, flexible scope (comments or everywhere), and multiple display modes",
+  "version": "0.0.7",
+  "publisher": "scdev0210",
+  "repository": {
+    "type": "git",
+    "url": "github.com/sc0210/custom-comment-highlighter"
+  },
   "engines": {
     "vscode": "^1.107.0"
   },
@@ -29,24 +33,29 @@
           "type": "array",
           "default": [
             {
-              "keyword": "//[SamChen]",
-              "color": "#8B2635"
+              "keyword": "// [SamChen]",
+              "color": "#1A3D64",
+              "fontColor": "#FFFFFF"
             },
             {
               "keyword": "// TODO:",
-              "color": "#1B5E63"
+              "color": "#FFA240",
+              "fontColor": "#FFFFFF"
             },
             {
               "keyword": "// FIX:",
-              "color": "#8B6F00"
+              "color": "#DC0000",
+              "fontColor": "#FFFFFF"
             },
             {
               "keyword": "// NOTE:",
-              "color": "#2C5F6F"
+              "color": "#41644A",
+              "fontColor": "#FFFFFF"
             },
             {
               "keyword": "// LOG:",
-              "color": "#8B5A2B"
+              "color": "#94B4C1",
+              "fontColor": "#FFFFFF"
             }
           ],
           "description": "Array of keywords to highlight with their corresponding colors. Each item should have 'keyword' (string) and 'color' (hex color code) properties.",
@@ -60,6 +69,10 @@
               "color": {
                 "type": "string",
                 "description": "Background color in hex format (e.g., #FF6B6B)"
+              },
+              "fontColor": {
+                "type": "string",
+                "description": "Font color in hex format (e.g., #FFFFFF). Defaults to white if not specified."
               }
             },
             "required": ["keyword", "color"]
@@ -74,10 +87,20 @@
           "type": "string",
           "enum": ["wholeLine", "keywordOnly"],
           "default": "wholeLine",
-          "description": "Highlight mode: 'wholeLine' highlights the entire line, 'keywordOnly' highlights only the keyword text",
+          "description": "Highlight mode: 'wholeLine' highlights the entire line content (excluding trailing spaces), 'keywordOnly' highlights only the keyword text",
           "enumDescriptions": [
-            "Highlight the entire line containing the keyword",
+            "Highlight the entire line content from first character to end (excluding trailing spaces)",
             "Highlight only the keyword text itself"
+          ]
+        },
+        "customCommentHighlighter.highlightScope": {
+          "type": "string",
+          "enum": ["commentsOnly", "everywhere"],
+          "default": "commentsOnly",
+          "description": "Scope of highlighting: 'commentsOnly' highlights keywords only in comments, 'everywhere' highlights keywords throughout the entire file",
+          "enumDescriptions": [
+            "Highlight keywords only when they appear in comments",
+            "Highlight keywords anywhere in the code (comments, variables, strings, etc.)"
           ]
         }
       }

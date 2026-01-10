@@ -5,11 +5,13 @@ import * as vscode from 'vscode';
 interface KeywordConfig {
 	keyword: string;
 	color: string;
+	fontColor?: string;
 }
 
 let decorationTypes: Map<string, vscode.TextEditorDecorationType> = new Map();
 let isEnabled: boolean = true;
 let highlightMode: string = 'wholeLine';
+let highlightScope: string = 'commentsOnly';
 let statusBarItem: vscode.StatusBarItem;
 
 // This method is called when your extension is activated
@@ -90,6 +92,7 @@ function loadConfiguration() {
 	const config = vscode.workspace.getConfiguration('customCommentHighlighter');
 	isEnabled = config.get('enabled', true);
 	highlightMode = config.get('highlightMode', 'wholeLine');
+	highlightScope = config.get('highlightScope', 'commentsOnly');
 
 	// Clear existing decoration types
 	decorationTypes.forEach(decorationType => decorationType.dispose());
@@ -97,12 +100,11 @@ function loadConfiguration() {
 
 	// Create decoration types for each keyword
 	const keywords: KeywordConfig[] = config.get('keywords', []);
-	keywords.forEach(({ keyword, color }) => {
+	keywords.forEach(({ keyword, color, fontColor }) => {
 		const decorationType = vscode.window.createTextEditorDecorationType({
 			backgroundColor: isEnabled ? color : undefined,
-			color: isEnabled ? '#FFFFFF' : undefined,
+			color: isEnabled ? (fontColor || '#FFFFFF') : undefined,
 			fontWeight: 'bold',
-			isWholeLine: highlightMode === 'wholeLine',
 			overviewRulerColor: color,
 			overviewRulerLane: vscode.OverviewRulerLane.Right
 		});
@@ -146,23 +148,20 @@ function updateDecorations(editor: vscode.TextEditor) {
 		const line = document.lineAt(lineNum);
 		const lineText = line.text;
 
+		// Skip non-comment lines if highlightScope is 'commentsOnly'
+		if (highlightScope === 'commentsOnly' && !isCommentLine(lineText)) {
+			continue;
+		}
+
 		// Check each keyword
 		decorationTypes.forEach((decorationType, keyword) => {
-			// Case-sensitive search
-			const index = lineText.indexOf(keyword);
-			if (index !== -1) {
+			let match: RegExpExecArray | null;
+			// Use global regex to find all matches in the line
+			const regex = new RegExp(keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+			while ((match = regex.exec(lineText)) !== null) {
 				let decoration: vscode.DecorationOptions;
-
 				if (highlightMode === 'wholeLine') {
-					// Highlight entire line including leading/trailing whitespace
-					const startPos = new vscode.Position(lineNum, 0);
-					const endPos = new vscode.Position(lineNum, lineText.length);
-					decoration = {
-						range: new vscode.Range(startPos, endPos),
-						hoverMessage: `Highlighted: ${keyword}`
-					};
-				} else {
-					// Highlight only the text content (trim whitespace)
+					// Highlight entire line content (from first non-whitespace to end, trimmed)
 					const trimmedStart = lineText.search(/\S/);
 					const trimmedEnd = lineText.trimEnd().length;
 					const startPos = new vscode.Position(lineNum, trimmedStart >= 0 ? trimmedStart : 0);
@@ -171,8 +170,15 @@ function updateDecorations(editor: vscode.TextEditor) {
 						range: new vscode.Range(startPos, endPos),
 						hoverMessage: `Highlighted: ${keyword}`
 					};
+				} else {
+					// Highlight only the matched keyword
+					const startPos = new vscode.Position(lineNum, match.index);
+					const endPos = new vscode.Position(lineNum, match.index + match[0].length);
+					decoration = {
+						range: new vscode.Range(startPos, endPos),
+						hoverMessage: `Highlighted: ${keyword}`
+					};
 				}
-
 				decorationsMap.get(keyword)?.push(decoration);
 			}
 		});
@@ -183,6 +189,18 @@ function updateDecorations(editor: vscode.TextEditor) {
 		const decorations = decorationsMap.get(keyword) || [];
 		editor.setDecorations(decorationType, decorations);
 	});
+}
+
+function isCommentLine(lineText: string): boolean {
+	const trimmed = lineText.trim();
+	// Check for common comment patterns
+	return trimmed.startsWith('//') ||      // JavaScript, TypeScript, C++, etc.
+		trimmed.startsWith('#') ||       // Python, Ruby, Shell, etc.
+		trimmed.startsWith('/*') ||      // Multi-line comment start
+		trimmed.startsWith('*') ||       // Multi-line comment continuation
+		trimmed.startsWith('<!--') ||    // HTML/XML comments
+		trimmed.startsWith('--') ||      // SQL, Lua comments
+		trimmed.endsWith('*/');
 }
 
 function updateStatusBar() {
