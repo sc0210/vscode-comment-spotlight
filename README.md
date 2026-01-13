@@ -3,10 +3,8 @@
 Highlight custom keywords anywhere in your code with bold text and configurable colors. Perfect for tracking TODOs, FIXMEs, personal notes, important variables, and more.
 
 ## Demo Screenshots
-- **Mode:** Whole Line Highlighting
-  ![Extension Demo-1](https://raw.githubusercontent.com/sc0210/vscode-comment-spotlight/main/images/demo-screenshot-wholeline.png)
-- **Mode:** Keyword Highlighting
-  ![Extension Demo-2](https://raw.githubusercontent.com/sc0210/vscode-comment-spotlight/main/images/demo-screenshot-keyword.png)
+- 
+  ![Extension Demo](https://raw.githubusercontent.com/sc0210/vscode-comment-spotlight/main/images/demo-screenshot.png)
 
 ## ✨ Key Features
 

@@ -8,9 +8,8 @@ let important = "keyword in variable name";
 let data = "important data in string";
 
 function testFunction() {
-    // FIXME: Fix this later
-    const FIXME = 123;
-    [SamChen]
+    // FIX: Fix this later
+    const FIX = 123;
     // Test multiple keywords on same line: TODO and important
     console.log("TODO: important task");
 }
