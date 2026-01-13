@@ -6,6 +6,8 @@ interface KeywordConfig {
 	keyword: string;
 	color: string;
 	fontColor?: string;
+	highlightMode?: 'wholeLine' | 'keywordOnly';
+	highlightScope?: 'commentsOnly' | 'everywhere';
 }
 
 let decorationTypes: Map<string, vscode.TextEditorDecorationType> = new Map();
@@ -143,24 +145,36 @@ function updateDecorations(editor: vscode.TextEditor) {
 		decorationsMap.set(keyword, []);
 	});
 
+	// Get keywords config for per-keyword settings
+	const config = vscode.workspace.getConfiguration('customCommentHighlighter');
+	const keywords: KeywordConfig[] = config.get('keywords', []);
+
 	// Process document line by line
 	for (let lineNum = 0; lineNum < document.lineCount; lineNum++) {
 		const line = document.lineAt(lineNum);
 		const lineText = line.text;
 
-		// Skip non-comment lines if highlightScope is 'commentsOnly'
-		if (highlightScope === 'commentsOnly' && !isCommentLine(lineText)) {
-			continue;
-		}
-
 		// Check each keyword
-		decorationTypes.forEach((decorationType, keyword) => {
+		keywords.forEach(keywordConfig => {
+			const keyword = keywordConfig.keyword;
+			const decorationType = decorationTypes.get(keyword);
+			if (!decorationType) { return; }
+
+			// Use per-keyword settings or fall back to global settings
+			const keywordHighlightScope = keywordConfig.highlightScope || highlightScope;
+			const keywordHighlightMode = keywordConfig.highlightMode || highlightMode;
+
+			// Skip non-comment lines if this keyword's scope is 'commentsOnly'
+			if (keywordHighlightScope === 'commentsOnly' && !isCommentLine(lineText)) {
+				return;
+			}
+
 			let match: RegExpExecArray | null;
 			// Use global regex to find all matches in the line
 			const regex = new RegExp(keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
 			while ((match = regex.exec(lineText)) !== null) {
 				let decoration: vscode.DecorationOptions;
-				if (highlightMode === 'wholeLine') {
+				if (keywordHighlightMode === 'wholeLine') {
 					// Highlight entire line content (from first non-whitespace to end, trimmed)
 					const trimmedStart = lineText.search(/\S/);
 					const trimmedEnd = lineText.trimEnd().length;

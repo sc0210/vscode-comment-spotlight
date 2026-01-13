@@ -10,16 +10,16 @@ Highlight custom keywords anywhere in your code with bold text and configurable 
 
 ## ✨ Key Features
 
-- 🎨 **Custom Colors** - Set background and font colors for each keyword
-- 🔤 **Bold Text** - Keywords always displayed in bold
-- 👁️ **Quick Toggle** - Status bar button to enable/disable highlighting
-- ⚡ **Live Updates** - Changes apply instantly as you type
-- 🎯 **Case Sensitive** - Precise keyword matching
-- 🌈 **Multiple Keywords** - Support unlimited custom keywords
-- 🔍 **Flexible Scope** - Highlight in comments only or throughout entire code
-- 📐 **Multiple Modes** - Highlight whole line or just the keyword
+- **Custom Colors** - Set background and font colors for each keyword
+- **Bold Text** - Keywords always displayed in bold
+- **Quick Toggle** - Status bar button to enable/disable highlighting
+- **Live Updates** - Changes apply instantly as you type
+- **Case Sensitive** - Precise keyword matching
+- **Multiple Keywords** - Support unlimited custom keywords
+- **Flexible Scope** - Highlight in comments only or throughout entire code
+- **Multiple Modes** - Highlight whole line or just the keyword
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Install
 - Open VS Code Extensions (`Cmd+Shift+X` or `Ctrl+Shift+X`)
@@ -39,7 +39,7 @@ Just type them in your comments and they'll be highlighted!
 ### 3. Toggle Highlighting
 Click the **👁 Comments** button in the bottom-right status bar to toggle on/off.
 
-## ⚙️ Customize Keywords
+## Customize Keywords
 
 1. Open Settings: `Cmd+,` (Mac) or `Ctrl+,` (Windows/Linux)
 2. Search for **"Custom Comment Highlighter"**
@@ -74,12 +74,39 @@ Click the **👁 Comments** button in the bottom-right status bar to toggle on/o
 }
 ```
 
+### With Individual Highlight Mode and Scope (New!)
+You can now configure `highlightMode` and `highlightScope` for each keyword individually:
+```json
+{
+  "customCommentHighlighter.keywords": [
+    {
+      "keyword": "// TODO:",
+      "color": "#FFA240",
+      "fontColor": "#FFFFFF",
+      "highlightMode": "wholeLine",
+      "highlightScope": "commentsOnly"
+    },
+    {
+      "keyword": "URGENT",
+      "color": "#DC0000",
+      "fontColor": "#FFFFFF",
+      "highlightMode": "keywordOnly",
+      "highlightScope": "everywhere"
+    }
+  ]
+}
+```
+
 **Configuration Options:**
 - `keyword` - The text to match (case-sensitive) **[required]**
 - `color` - Background color in hex (e.g., `#FFA240`) **[required]**
 - `fontColor` - Text color in hex (e.g., `#FFFFFF`) **[optional, defaults to white]**
+- `highlightMode` - Display mode: `wholeLine` or `keywordOnly` **[optional, defaults to global setting]**
+- `highlightScope` - Scope: `commentsOnly` or `everywhere` **[optional, defaults to global setting]**
 
-## 🎨 Change Colors
+**Note:** If `highlightMode` or `highlightScope` are not specified for a keyword, the global settings will be used.
+
+## Change Colors
 
 Pick colors that work well with your theme:
 
@@ -124,7 +151,78 @@ let data = "NOTE: check";    // ✅ Highlighted
 }
 ```
 
-## 🎨 Highlight Display Modes
+## Per-Keyword Settings (Advanced)
+
+You can now override the global `highlightMode` and `highlightScope` settings for individual keywords. This gives you fine-grained control over how each keyword is displayed.
+
+### Use Cases
+
+**Example 1: Mix comment-only and everywhere highlighting**
+```json
+{
+  "customCommentHighlighter.highlightScope": "commentsOnly",
+  "customCommentHighlighter.keywords": [
+    {
+      "keyword": "// TODO:",
+      "color": "#FFA240"
+      // Uses global scope: commentsOnly
+    },
+    {
+      "keyword": "CRITICAL",
+      "color": "#DC0000",
+      "highlightScope": "everywhere"
+      // Override: highlights CRITICAL anywhere in code
+    }
+  ]
+}
+```
+
+**Example 2: Different display modes for different keywords**
+```json
+{
+  "customCommentHighlighter.highlightMode": "wholeLine",
+  "customCommentHighlighter.keywords": [
+    {
+      "keyword": "// NOTE:",
+      "color": "#41644A",
+      "highlightMode": "wholeLine"
+      // Highlights entire line
+    },
+    {
+      "keyword": "// TAG:",
+      "color": "#94B4C1",
+      "highlightMode": "keywordOnly"
+      // Highlights only "// TAG:"
+    }
+  ]
+}
+```
+
+**Example 3: Complete customization per keyword**
+```json
+{
+  "customCommentHighlighter.keywords": [
+    {
+      "keyword": "// TODO:",
+      "color": "#FFA240",
+      "fontColor": "#000000",
+      "highlightMode": "wholeLine",
+      "highlightScope": "commentsOnly"
+    },
+    {
+      "keyword": "FIXME",
+      "color": "#DC0000",
+      "fontColor": "#FFFFFF",
+      "highlightMode": "keywordOnly",
+      "highlightScope": "everywhere"
+    }
+  ]
+}
+```
+
+**Remember:** Per-keyword settings always take priority over global settings. If not specified, keywords will use the global `highlightMode` and `highlightScope` settings.
+
+## Highlight Display Modes
 
 Choose how to display highlighted keywords:
 
@@ -149,13 +247,13 @@ Highlights **only the keyword itself**:
 
 See [Highlight Scope Guide](docs/HIGHLIGHT-SCOPE.md) for detailed examples.
 
-## 📖 Documentation
+## Documentation
 - ✨ [Features](docs/FEATURES.md) - Complete feature list
 - ⚙️ [Advanced Configuration](docs/ADVANCED-CONFIG.md) - Detailed settings and examples
 - 🚀 [Quick Reference](docs/QUICK-REFERENCE.md) - Fast lookup guide
 - 💡 [Examples](examples/) - Sample files
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 **Highlighting not working?**
 1. Check if toggle is enabled (status bar button)
@@ -171,19 +269,19 @@ See [Highlight Scope Guide](docs/HIGHLIGHT-SCOPE.md) for detailed examples.
 - Images are hosted on GitHub and may take time to load
 - Make sure your repository is public
 
-## 📋 Requirements
+## Requirements
 
 - Visual Studio Code v1.107.0 or higher
 
-## 📄 License
+## License
 
 MIT License - Free for personal and commercial use
 
-## 🤝 Contributing
+## Contributing
 
 Issues and pull requests welcome! Visit our [GitHub repository](https://github.com/sc0210/vscode-comment-spotlight)
 
 ---
 
-**Enjoy your highlighted comments!** 🎨
+**Enjoy your highlighted comments!** 
 

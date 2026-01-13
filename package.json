@@ -2,7 +2,7 @@
   "name": "custom-comment-highlighter",
   "displayName": "Custom Comment Highlighter",
   "description": "Highlight custom keywords anywhere in your code with configurable colors, flexible scope (comments or everywhere), and multiple display modes",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "publisher": "scdev0210",
   "repository": {
     "type": "git",
@@ -73,6 +73,24 @@
               "fontColor": {
                 "type": "string",
                 "description": "Font color in hex format (e.g., #FFFFFF). Defaults to white if not specified."
+              },
+              "highlightMode": {
+                "type": "string",
+                "enum": ["wholeLine", "keywordOnly"],
+                "description": "Highlight mode for this keyword: 'wholeLine' highlights the entire line, 'keywordOnly' highlights only the keyword. If not specified, uses the global highlightMode setting.",
+                "enumDescriptions": [
+                  "Highlight the entire line content (excluding trailing spaces)",
+                  "Highlight only the keyword text itself"
+                ]
+              },
+              "highlightScope": {
+                "type": "string",
+                "enum": ["commentsOnly", "everywhere"],
+                "description": "Highlight scope for this keyword: 'commentsOnly' highlights only in comments, 'everywhere' highlights throughout the file. If not specified, uses the global highlightScope setting.",
+                "enumDescriptions": [
+                  "Highlight keyword only when it appears in comments",
+                  "Highlight keyword anywhere in the code"
+                ]
               }
             },
             "required": ["keyword", "color"]
