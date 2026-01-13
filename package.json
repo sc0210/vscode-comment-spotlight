@@ -2,7 +2,7 @@
   "name": "custom-comment-highlighter",
   "displayName": "Custom Comment Highlighter",
   "description": "Highlight custom keywords anywhere in your code with configurable colors, flexible scope (comments or everywhere), and multiple display modes",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "publisher": "scdev0210",
   "repository": {
     "type": "git",
