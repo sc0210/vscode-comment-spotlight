@@ -135,7 +135,6 @@ function clearAllDecorations() {
 
 function updateDecorations(editor: vscode.TextEditor) {
 	const document = editor.document;
-	const text = document.getText();
 
 	// Map to store decorations for each keyword
 	const decorationsMap: Map<string, vscode.DecorationOptions[]> = new Map();
@@ -149,29 +148,48 @@ function updateDecorations(editor: vscode.TextEditor) {
 	const config = vscode.workspace.getConfiguration('customCommentHighlighter');
 	const keywords: KeywordConfig[] = config.get('keywords', []);
 
+	// Pre-compile regexes and prepare keyword configs for faster lookup
+	const keywordRegexMap = new Map<string, RegExp>();
+	const keywordConfigMap = new Map<string, KeywordConfig>();
+
+	keywords.forEach(keywordConfig => {
+		const keyword = keywordConfig.keyword;
+		const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+		keywordRegexMap.set(keyword, new RegExp(escapedKeyword, 'g'));
+		keywordConfigMap.set(keyword, keywordConfig);
+	});
+
 	// Process document line by line
 	for (let lineNum = 0; lineNum < document.lineCount; lineNum++) {
 		const line = document.lineAt(lineNum);
 		const lineText = line.text;
 
+		// Check if line is a comment once per line (optimization)
+		const isCommentLineFlag = isCommentLine(lineText);
+
 		// Check each keyword
-		keywords.forEach(keywordConfig => {
-			const keyword = keywordConfig.keyword;
-			const decorationType = decorationTypes.get(keyword);
-			if (!decorationType) { return; }
+		decorationTypes.forEach((decorationType, keyword) => {
+			const keywordConfig = keywordConfigMap.get(keyword);
+			if (!keywordConfig) { return; }
 
 			// Use per-keyword settings or fall back to global settings
 			const keywordHighlightScope = keywordConfig.highlightScope || highlightScope;
 			const keywordHighlightMode = keywordConfig.highlightMode || highlightMode;
 
 			// Skip non-comment lines if this keyword's scope is 'commentsOnly'
-			if (keywordHighlightScope === 'commentsOnly' && !isCommentLine(lineText)) {
+			if (keywordHighlightScope === 'commentsOnly' && !isCommentLineFlag) {
 				return;
 			}
 
+			// Get the pre-compiled regex for this keyword
+			const regex = keywordRegexMap.get(keyword);
+			if (!regex) { return; }
+
+			// Reset regex state for this line
+			regex.lastIndex = 0;
+
 			let match: RegExpExecArray | null;
 			// Use global regex to find all matches in the line
-			const regex = new RegExp(keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
 			while ((match = regex.exec(lineText)) !== null) {
 				let decoration: vscode.DecorationOptions;
 				if (keywordHighlightMode === 'wholeLine') {
@@ -207,15 +225,21 @@ function updateDecorations(editor: vscode.TextEditor) {
 
 function isCommentLine(lineText: string): boolean {
 	const trimmed = lineText.trim();
-	// Check for common comment patterns
-	return trimmed.startsWith('//') ||      // JavaScript, TypeScript, C++, etc.
-		trimmed.startsWith('#') ||       // Python, Ruby, Shell, etc.
-		trimmed.startsWith('/*') ||      // Multi-line comment start
-		trimmed.startsWith('*') ||       // Multi-line comment continuation
-		trimmed.startsWith('<!--') ||    // HTML/XML comments
-		trimmed.startsWith('--') ||      // SQL, Lua comments
-		trimmed.endsWith('*/');
+	if (trimmed.length === 0) return false; // Empty lines are not comments
+
+	const firstChar = trimmed.charCodeAt(0);
+	const secondChar = trimmed.length > 1 ? trimmed.charCodeAt(1) : 0;
+
+	// Fast check using character codes for common comment patterns
+	// 47 = '/', 35 = '#', 42 = '*', 60 = '<', 45 = '-'
+	return (firstChar === 47 && (secondChar === 47 || secondChar === 42)) || // //, /*
+		firstChar === 35 ||                                                  // #
+		firstChar === 42 ||                                                  // *
+		(firstChar === 60 && trimmed.startsWith('<!--')) ||                 // <!--
+		(firstChar === 45 && secondChar === 45) ||                          // --
+		trimmed.endsWith('*/');                                              // */
 }
+
 
 function updateStatusBar() {
 	if (isEnabled) {

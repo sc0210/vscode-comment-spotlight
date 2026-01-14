@@ -4,6 +4,19 @@ All notable changes to the Custom Comment Highlighter extension will be document
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.0.10] - 2026-01-14
+
+### Fixed
+- Fixed potential errors when using `commentsOnly` scope
+- Improved stability of comment detection for edge cases
+
+### Performance
+- Optimized regex compilation: patterns are now pre-compiled per update instead of recreating for every line
+- Reduced redundant comment detection: `isCommentLine()` now called once per line instead of once per keyword per line
+- Faster comment detection using character code checks instead of multiple string comparisons
+- Better performance with large files and many configured keywords
+- More efficient background task execution
+
 ## [0.0.8] - 2026-01-13
 
 ### Added
