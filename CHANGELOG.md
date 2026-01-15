@@ -4,6 +4,18 @@ All notable changes to the Custom Comment Highlighter extension will be document
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.0.11] - 2026-01-15
+
+### Added
+- **Multi-keyword support**: The `keyword` field now accepts both a single string or an array of strings
+  - Multiple keywords can now share the same highlight style (color, fontColor, highlightMode, highlightScope)
+  - Example: `"keyword": ["FIX", "FIXME", "BUG"]` will apply the same red highlighting to all three keywords
+  - Maintains backward compatibility with single keyword strings
+  - Useful for grouping related keywords (error keywords, todo keywords, etc.)
+
+### Fixed
+- Fixed ESLint warning by adding curly braces to if statement in `isCommentLine` function
+
 ## [0.0.10] - 2026-01-14
 
 ### Fixed

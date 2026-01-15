@@ -95,8 +95,30 @@ You can now configure `highlightMode` and `highlightScope` for each keyword indi
 }
 ```
 
+### Multiple Keywords with Same Style (New!)
+You can now use an **array of keywords** to apply the same highlight style to multiple keywords:
+```json
+{
+  "customCommentHighlighter.keywords": [
+    {
+      "keyword": ["FIX", "FIXME", "BUG"],
+      "color": "#DC0000",
+      "fontColor": "#FFFFFF",
+      "highlightMode": "keywordOnly",
+      "highlightScope": "everywhere"
+    },
+    {
+      "keyword": ["TODO", "TODO:", "@todo"],
+      "color": "#FFA240",
+      "fontColor": "#FFFFFF"
+    }
+  ]
+}
+```
+**Benefits:** Group related keywords together without duplicating configuration!
+
 **Configuration Options:**
-- `keyword` - The text to match (case-sensitive) **[required]**
+- `keyword` - The text to match (case-sensitive). Can be a **single string** or an **array of strings** **[required]**
 - `color` - Background color in hex (e.g., `#FFA240`) **[required]**
 - `fontColor` - Text color in hex (e.g., `#FFFFFF`) **[optional, defaults to white]**
 - `highlightMode` - Display mode: `wholeLine` or `keywordOnly` **[optional, defaults to global setting]**

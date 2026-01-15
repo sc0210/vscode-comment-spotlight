@@ -3,7 +3,7 @@
 import * as vscode from 'vscode';
 
 interface KeywordConfig {
-	keyword: string;
+	keyword: string | string[]; // Support both single keyword and array of keywords
 	color: string;
 	fontColor?: string;
 	highlightMode?: 'wholeLine' | 'keywordOnly';
@@ -110,7 +110,11 @@ function loadConfiguration() {
 			overviewRulerColor: color,
 			overviewRulerLane: vscode.OverviewRulerLane.Right
 		});
-		decorationTypes.set(keyword, decorationType);
+		// Handle both string and array of keywords
+		const keywordArray = Array.isArray(keyword) ? keyword : [keyword];
+		keywordArray.forEach(kw => {
+			decorationTypes.set(kw, decorationType);
+		});
 	});
 
 	// Update status bar when config changes
@@ -153,10 +157,13 @@ function updateDecorations(editor: vscode.TextEditor) {
 	const keywordConfigMap = new Map<string, KeywordConfig>();
 
 	keywords.forEach(keywordConfig => {
-		const keyword = keywordConfig.keyword;
-		const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-		keywordRegexMap.set(keyword, new RegExp(escapedKeyword, 'g'));
-		keywordConfigMap.set(keyword, keywordConfig);
+		// Handle both string and array of keywords
+		const keywordArray = Array.isArray(keywordConfig.keyword) ? keywordConfig.keyword : [keywordConfig.keyword];
+		keywordArray.forEach(keyword => {
+			const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+			keywordRegexMap.set(keyword, new RegExp(escapedKeyword, 'g'));
+			keywordConfigMap.set(keyword, keywordConfig);
+		});
 	});
 
 	// Process document line by line
@@ -225,7 +232,9 @@ function updateDecorations(editor: vscode.TextEditor) {
 
 function isCommentLine(lineText: string): boolean {
 	const trimmed = lineText.trim();
-	if (trimmed.length === 0) return false; // Empty lines are not comments
+	if (trimmed.length === 0) {
+		return false; // Empty lines are not comments
+	}
 
 	const firstChar = trimmed.charCodeAt(0);
 	const secondChar = trimmed.length > 1 ? trimmed.charCodeAt(1) : 0;
