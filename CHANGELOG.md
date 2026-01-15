@@ -15,6 +15,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Fixed
 - Fixed ESLint warning by adding curly braces to if statement in `isCommentLine` function
+- Fixed bug where only the last keyword was highlighted when multiple keywords shared the same style
+  - Now properly combines decorations from all keywords with the same decoration type
+  - All keywords in an array now correctly display their highlights
 
 ## [0.0.10] - 2026-01-14
 

@@ -223,9 +223,19 @@ function updateDecorations(editor: vscode.TextEditor) {
 		});
 	}
 
-	// Apply all decorations
+	// Apply all decorations - group by decoration type to handle multiple keywords with same style
+	const decorationsByType = new Map<vscode.TextEditorDecorationType, vscode.DecorationOptions[]>();
+
 	decorationTypes.forEach((decorationType, keyword) => {
 		const decorations = decorationsMap.get(keyword) || [];
+		if (!decorationsByType.has(decorationType)) {
+			decorationsByType.set(decorationType, []);
+		}
+		decorationsByType.get(decorationType)!.push(...decorations);
+	});
+
+	// Apply grouped decorations
+	decorationsByType.forEach((decorations, decorationType) => {
 		editor.setDecorations(decorationType, decorations);
 	});
 }
