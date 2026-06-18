@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Plan your wedding: budget, guest check-in, and a little fun." />
+  <meta name="theme-color" content="#b76e79" />
+  <title>Forever &middot; Wedding Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- App header -->
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-mark">&#128141;</span>
+      <span class="brand-name" id="brandNames">Our Wedding</span>
+    </div>
+    <button class="icon-btn" id="settingsBtn" title="Couple &amp; date settings" aria-label="Settings">&#9881;</button>
+  </header>
+
+  <!-- Views -->
+  <main class="app-main">
+    <!-- DASHBOARD -->
+    <section class="view" id="view-dashboard" data-view="dashboard">
+      <div class="hero">
+        <p class="hero-eyebrow">The countdown to</p>
+        <h1 class="hero-title" id="heroNames">Alex &amp; Sam</h1>
+        <p class="hero-date" id="heroDate">Set your wedding date</p>
+        <div class="countdown" id="countdown" aria-live="polite">
+          <div class="cd-unit"><span class="cd-num" id="cdDays">0</span><span class="cd-label">days</span></div>
+          <div class="cd-unit"><span class="cd-num" id="cdHours">0</span><span class="cd-label">hrs</span></div>
+          <div class="cd-unit"><span class="cd-num" id="cdMins">0</span><span class="cd-label">min</span></div>
+          <div class="cd-unit"><span class="cd-num" id="cdSecs">0</span><span class="cd-label">sec</span></div>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <article class="stat-card">
+          <span class="stat-icon">&#128176;</span>
+          <span class="stat-value" id="statSpent">$0</span>
+          <span class="stat-label">Spent so far</span>
+          <div class="stat-bar"><div class="stat-bar-fill" id="statBudgetBar"></div></div>
+          <span class="stat-sub" id="statBudgetSub">of $0 budget</span>
+        </article>
+        <article class="stat-card">
+          <span class="stat-icon">&#128101;</span>
+          <span class="stat-value" id="statGuests">0</span>
+          <span class="stat-label">Guests confirmed</span>
+          <span class="stat-sub" id="statGuestSub">0 checked in</span>
+        </article>
+        <article class="stat-card">
+          <span class="stat-icon">&#9989;</span>
+          <span class="stat-value" id="statTasks">0%</span>
+          <span class="stat-label">Items paid</span>
+          <div class="stat-bar"><div class="stat-bar-fill" id="statPaidBar"></div></div>
+          <span class="stat-sub" id="statPaidSub">0 of 0 paid</span>
+        </article>
+      </div>
+
+      <div class="dash-cta">
+        <h2 class="section-title">Quick start</h2>
+        <div class="cta-grid">
+          <button class="cta-card" data-goto="budget"><span>&#128202;</span>Plan the budget</button>
+          <button class="cta-card" data-goto="guests"><span>&#9993;</span>Manage guests</button>
+          <button class="cta-card" data-goto="game"><span>&#127881;</span>Play a game</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- BUDGET -->
+    <section class="view" id="view-budget" data-view="budget" hidden>
+      <div class="view-head">
+        <h1 class="view-title">Budget</h1>
+        <p class="view-sub">Track what you plan to spend versus what you actually spend.</p>
+      </div>
+
+      <div class="budget-summary">
+        <div class="bs-item">
+          <span class="bs-label">Total budget</span>
+          <span class="bs-value" id="bsTotalBudget">$0</span>
+          <button class="link-btn" id="editTotalBudget">Edit</button>
+        </div>
+        <div class="bs-item">
+          <span class="bs-label">Planned</span>
+          <span class="bs-value" id="bsPlanned">$0</span>
+        </div>
+        <div class="bs-item">
+          <span class="bs-label">Actual spent</span>
+          <span class="bs-value" id="bsActual">$0</span>
+        </div>
+        <div class="bs-item">
+          <span class="bs-label">Remaining</span>
+          <span class="bs-value" id="bsRemaining">$0</span>
+        </div>
+      </div>
+
+      <form class="add-form" id="budgetForm" autocomplete="off">
+        <input type="text" id="bItem" placeholder="Item (e.g. Venue)" required />
+        <select id="bCategory">
+          <option>Venue</option>
+          <option>Catering</option>
+          <option>Attire</option>
+          <option>Photography</option>
+          <option>Flowers</option>
+          <option>Music</option>
+          <option>Rings</option>
+          <option>Stationery</option>
+          <option>Transport</option>
+          <option>Other</option>
+        </select>
+        <input type="number" id="bPlanned" placeholder="Planned $" min="0" step="0.01" />
+        <input type="number" id="bActual" placeholder="Actual $" min="0" step="0.01" />
+        <button type="submit" class="primary-btn">Add</button>
+      </form>
+
+      <div class="budget-list" id="budgetList"></div>
+      <p class="empty-state" id="budgetEmpty">No budget items yet. Add your first above.</p>
+    </section>
+
+    <!-- GUESTS / CHECK-IN -->
+    <section class="view" id="view-guests" data-view="guests" hidden>
+      <div class="view-head">
+        <h1 class="view-title">Guests &amp; Check-in</h1>
+        <p class="view-sub">Manage RSVPs, then tap to check guests in on the big day.</p>
+      </div>
+
+      <div class="guest-toolbar">
+        <div class="seg" role="tablist" aria-label="Mode">
+          <button class="seg-btn is-active" data-mode="manage">Manage list</button>
+          <button class="seg-btn" data-mode="checkin">Check-in mode</button>
+        </div>
+        <div class="guest-counts">
+          <span><strong id="gcTotal">0</strong> invited</span>
+          <span><strong id="gcConfirmed">0</strong> confirmed</span>
+          <span><strong id="gcCheckedIn">0</strong> checked in</span>
+        </div>
+      </div>
+
+      <form class="add-form" id="guestForm" autocomplete="off">
+        <input type="text" id="gName" placeholder="Guest name" required />
+        <input type="number" id="gParty" placeholder="Party size" min="1" value="1" />
+        <select id="gRsvp">
+          <option value="pending">Pending</option>
+          <option value="yes">Confirmed</option>
+          <option value="no">Declined</option>
+        </select>
+        <button type="submit" class="primary-btn">Add</button>
+      </form>
+
+      <div class="checkin-search" id="checkinSearchWrap" hidden>
+        <input type="search" id="checkinSearch" placeholder="&#128269; Search guests to check in..." />
+      </div>
+
+      <div class="guest-list" id="guestList"></div>
+      <p class="empty-state" id="guestEmpty">No guests yet. Add your first above.</p>
+    </section>
+
+    <!-- GAME -->
+    <section class="view" id="view-game" data-view="game" hidden>
+      <div class="view-head">
+        <h1 class="view-title">Memory Match</h1>
+        <p class="view-sub">Find all the matching pairs. A little break from the planning!</p>
+      </div>
+
+      <div class="game-bar">
+        <div class="game-stat"><span class="gs-label">Moves</span><span class="gs-value" id="gameMoves">0</span></div>
+        <div class="game-stat"><span class="gs-label">Pairs</span><span class="gs-value" id="gamePairs">0/8</span></div>
+        <div class="game-stat"><span class="gs-label">Time</span><span class="gs-value" id="gameTime">0:00</span></div>
+        <div class="game-stat"><span class="gs-label">Best</span><span class="gs-value" id="gameBest">&ndash;</span></div>
+        <button class="primary-btn" id="gameRestart">New game</button>
+      </div>
+
+      <div class="game-board" id="gameBoard" aria-label="Memory game board"></div>
+
+      <div class="game-win" id="gameWin" hidden>
+        <span class="win-emoji">&#127881;</span>
+        <h2>You found them all!</h2>
+        <p id="winSummary">Nicely done.</p>
+        <button class="primary-btn" id="winPlayAgain">Play again</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Bottom navigation -->
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <button class="nav-btn is-active" data-goto="dashboard"><span class="nav-icon">&#127968;</span><span class="nav-text">Home</span></button>
+    <button class="nav-btn" data-goto="budget"><span class="nav-icon">&#128202;</span><span class="nav-text">Budget</span></button>
+    <button class="nav-btn" data-goto="guests"><span class="nav-icon">&#128101;</span><span class="nav-text">Guests</span></button>
+    <button class="nav-btn" data-goto="game"><span class="nav-icon">&#127918;</span><span class="nav-text">Game</span></button>
+  </nav>
+
+  <!-- Settings modal -->
+  <div class="modal-overlay" id="settingsModal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <h2 id="settingsTitle">Wedding details</h2>
+      <label class="field">
+        <span>Partner one</span>
+        <input type="text" id="setName1" placeholder="Alex" />
+      </label>
+      <label class="field">
+        <span>Partner two</span>
+        <input type="text" id="setName2" placeholder="Sam" />
+      </label>
+      <label class="field">
+        <span>Wedding date</span>
+        <input type="date" id="setDate" />
+      </label>
+      <label class="field">
+        <span>Total budget ($)</span>
+        <input type="number" id="setBudget" min="0" step="100" placeholder="20000" />
+      </label>
+      <div class="modal-actions">
+        <button class="ghost-btn" id="settingsCancel">Cancel</button>
+        <button class="primary-btn" id="settingsSave">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="js/store.js"></script>
+  <script src="js/budget.js"></script>
+  <script src="js/guests.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
